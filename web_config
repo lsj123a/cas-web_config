@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <section name="casClientConfig" type="DotNetCasClient.Configuration.CasClientConfiguration, DotNetCasClient" />
+  </configSections>
+  <connectionStrings />
+  <system.web>
+    <!-- 
+            设置 compilation debug="true" 可将调试符号插入
+            已编译的页面中。但由于这会 
+            影响性能，因此只在开发过程中将此值 
+            设置为 true。
+        -->
+    <httpRuntime executionTimeout="300" maxRequestLength="409600" useFullyQualifiedRedirectUrl="false" />
+    <!--
+            通过 <authentication> 节可以配置 ASP.NET 用来 
+            识别进入用户的
+            安全身份验证模式。 
+        -->
+    <authentication mode="Forms">
+      <forms name=".DotNetCasClientAuth" loginUrl="https://域名/cas/login" cookieless="UseCookies" />
+    </authentication>
+    <authorization>
+   <deny users="?" />
+  </authorization>
+    <customErrors mode="Off" />
+    <pages controlRenderingCompatibilityVersion="3.5" clientIDMode="AutoID" />
+    <!--<sessionState mode="StateServer" stateConnectionString="tcpip=127.0.0.1:42424" sqlConnectionString="data source=127.0.0.1;Trusted_Connection=yes" cookieless="false" timeout="120"/>-->
+    <httpModules>
+      <add name="DotNetCasClient" type="DotNetCasClient.CasAuthenticationModule,DotNetCasClient" />
+    </httpModules>
+  </system.web>
+  <!-- 
+        在 Internet 信息服务 7.0 下运行 ASP.NET AJAX 需要 system.webServer
+        节。对早期版本的 IIS 来说则不需要此节。
+    -->
+  <system.webServer>
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="102400000" />
+      </requestFiltering>
+    </security>
+    <modules runAllManagedModulesForAllRequests="true">
+      <remove name="DotNetCasClient" />
+      <add name="DotNetCasClient" type="DotNetCasClient.CasAuthenticationModule,DotNetCasClient" />
+    </modules>
+    <validation validateIntegratedModeConfiguration="false" />
+
+    <directoryBrowse enabled="true" />
+  </system.webServer>
+  <casClientConfig casServerLoginUrl="https://域名/cas/login" casServerUrlPrefix="https://域名/cas/login" serverName="http://localhost:61640/" notAuthorizedUrl="~/NotAuthorized.aspx" cookiesRequiredUrl="~/CookiesRequired.aspx" redirectAfterValidation="true" gateway="false" renew="false" singleSignOut="true" ticketTimeTolerance="5000" ticketValidatorName="Cas20"  serviceTicketManager="CacheServiceTicketManager" gatewayStatusCookieName="CasGatewayStatus" />
+</configuration>
